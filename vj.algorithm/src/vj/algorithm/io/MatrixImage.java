@@ -21,6 +21,49 @@ public class MatrixImage {
 		this.data = data;
 	}
 	
+	public MatrixImage(int rows, int cols){
+		this.rows = rows;
+		this.cols = cols;
+		this.data = new double[rows * cols];
+	}
+	
+	public double getValue(int i, int j){
+		int idx = (i) * cols + j % cols;
+		return data[idx];
+	}
+	public void setValue(int i, int j, double v){
+		int idx = (i) * cols + j % cols;
+		data[idx] = v;
+	}
+	
+	public static MatrixImage getIntegralImage(MatrixImage mt){
+		int r = mt.rows;
+		int c = mt.cols;
+		MatrixImage integralImage = new MatrixImage(r, c);
+		
+		for(int i=0;i<r;i++){
+			for(int j=0;j<c;j++){
+				double value = mt.getValue(i, j);
+            	value += i > 0 ? integralImage.getValue(i - 1, j) : 0;
+            	value += j > 0 ? integralImage.getValue(i, j - 1) : 0;
+            	value -= i > 0 && j > 0 ? integralImage.getValue(i - 1, j - 1) : 0;
+            	
+            	integralImage.setValue(i, j, value);
+			}
+		}
+		return integralImage;
+	}
+	
+	public void print(){
+		System.out.println(rows + " " + cols);
+		for(int i=0;i<getSize();i++){
+			System.out.print(data[i] + " ");
+			if((i + 1) % cols == 0 && i > 0){
+				System.out.println();
+			}
+		}
+		System.out.println();
+	}
 	public int getSize(){
 		return rows * cols;
 	}

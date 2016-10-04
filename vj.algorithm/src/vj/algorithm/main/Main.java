@@ -1,10 +1,5 @@
 package vj.algorithm.main;
 
-import java.util.ArrayList;
-
-import vj.algorithm.io.ConstantPath;
-import vj.algorithm.io.ImageManager;
-import vj.algorithm.io.MatrixImage;
 
 public class Main {
 	public static void main(String[] args) {
@@ -70,8 +65,28 @@ public class Main {
 		
 		*/
 		
+		/* Test 4
+		 	import java.util.ArrayList;
+
+			import vj.algorithm.io.ConstantPath;
+			import vj.algorithm.io.ImageManager;
+			import vj.algorithm.io.MatrixImage;
+
+
 		ArrayList<MatrixImage> arr = ImageManager.getListMatrixImage(ConstantPath.ImagePFACE, ConstantPath.MatrixPFACE);
 		System.out.println(arr.size());
+		*/
+		
+		/*
+		import vj.algorithm.io.ConstantPath;
+		import vj.algorithm.io.MatrixImage;
+
+		MatrixImage mt = MatrixImage.readFileTxtToBufferedImage(ConstantPath.MatrixTest + "\\" + "abc.txt");
+		MatrixImage integralImage = MatrixImage.getIntegralImage(mt);
+		integralImage.print();
+		
+		*/
+
 		System.out.println("OK");
 	}
 }

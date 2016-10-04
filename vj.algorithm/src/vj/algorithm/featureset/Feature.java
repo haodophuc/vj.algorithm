@@ -10,5 +10,5 @@ package vj.algorithm.featureset;
  * --> lưu thành 1 file txt
  */
 public class Feature {
-
+	
 }
