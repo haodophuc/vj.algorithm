@@ -1,5 +1,8 @@
 package vj.algorithm.main;
 
+import vj.algorithm.featureset.Feature;
+import vj.algorithm.io.ConstantPath;
+
 
 public class Main {
 	public static void main(String[] args) {
@@ -86,6 +89,11 @@ public class Main {
 		integralImage.print();
 		
 		*/
+		String path = ConstantPath.FeatureTest;
+		String pathDraft = ConstantPath.FeatureDraft;
+		
+		
+		Feature.createFeature(pathDraft, path + "\\type1.txt", path + "\\matrix.txt");
 
 		System.out.println("OK");
 	}

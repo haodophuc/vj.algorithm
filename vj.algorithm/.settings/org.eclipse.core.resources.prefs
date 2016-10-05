@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/vj/algorithm/adaboost/Adaboost.java=UTF-8
+encoding//src/vj/algorithm/experiment/Threshold.java=UTF-8
+encoding//src/vj/algorithm/featureset/Constant.java=UTF-8
+encoding//src/vj/algorithm/featureset/Feature.java=UTF-8
+encoding//src/vj/algorithm/featureset/WeakClassifier.java=UTF-8
+encoding//src/vj/algorithm/io/ConstantPath.java=UTF-8
+encoding//src/vj/algorithm/io/ImageManager.java=UTF-8

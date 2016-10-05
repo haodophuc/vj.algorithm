@@ -15,6 +15,15 @@ public class MatrixImage {
 	int rows, cols;
 	double[]data;
 	
+	public double[] getData(){
+		return this.data;
+	}
+	public int getRows(){
+		return this.rows;
+	}
+	public int getCols(){
+		return this.cols;
+	}
 	public MatrixImage(int rows, int cols, double []data){
 		this.rows = rows;
 		this.cols = cols;
