@@ -21,6 +21,53 @@ public class MatrixImage {
 	public int getRows(){
 		return this.rows;
 	}
+	
+	public MatrixImage(int i1, int j1, int x0, int y0, double[][]temp){
+		int k = 0;
+		double []dat = new double[temp.length * temp[0].length];
+		
+		for(int i=x0;i<x0 + i1;i++){
+			for(int j=y0;j<y0 + j1;j++){
+				dat[k++] = temp[i][j];
+			}
+		}
+		this.rows = i1; this.cols = j1;
+		this.data = dat;
+	}
+	public MatrixImage(double[][]temp){
+		int k = 0;
+		double []dat = new double[temp.length * temp[0].length];
+		
+		for(int i=0;i<temp.length;i++){
+			for(int j=0;j<temp[0].length;j++){
+				dat[k++] = temp[i][j];
+			}
+		}
+		this.rows = temp.length;
+		this.cols = temp[0].length;
+		
+		this.data = dat;
+	}
+	
+	public static double[][] convertToMatrix(MatrixImage mtImage){
+		int hImage = mtImage.getRows();
+		int wImage = mtImage.getCols();
+		
+		double[][]temp = new double[hImage][wImage];
+		int iRow = 0;
+		int jCol = 0;
+		
+		for(int i=0;i<hImage * wImage;i++){
+			temp[iRow][jCol] = mtImage.getData()[i];
+			jCol++;
+			if(jCol == wImage){
+				jCol = 0;
+				iRow++;
+			}
+		}
+		
+		return temp;
+	}
 	public int getCols(){
 		return this.cols;
 	}
@@ -63,6 +110,116 @@ public class MatrixImage {
 		return integralImage;
 	}
 	
+	public static MatrixImage getCandidates(double [][]temp, MatrixImage type, double[][]temp_0){
+		int hType = type.getRows();
+		int wType = type.getCols();
+		
+		int hImage = temp.length;
+		int wImage = temp[0].length;
+		
+		int []arrayRows = new int [hType];
+		int []arrayCols = new int [wType];
+		
+		int divRows = (int)(hImage / hType);
+		int countRows = 0;
+		for(int i=0;i<hType - 1;i++){
+			arrayRows[i] = divRows;
+			countRows += divRows;
+		}
+		arrayRows[hType - 1] = hImage - countRows;
+		
+		
+		int divCols = (int)(wImage / wType);
+		int countCols = 0;
+		for(int i=0;i<wType - 1;i++){
+			arrayCols[i] = divCols;
+			countCols += divCols;
+		}
+		arrayCols[wType - 1] = wImage - countCols;
+		
+		ObjectCandidate[] res = new ObjectCandidate[arrayRows.length * arrayCols.length];
+		int k = 0;
+		
+		int x0 = 0;
+		int y0 = 0;
+		
+		for(int i=0;i<arrayRows.length;i++){
+			for(int j=0;j<arrayCols.length;j++){
+				res[k++] = new ObjectCandidate(x0, y0, arrayRows[i], arrayCols[j]);
+				
+				y0 += arrayCols[j];
+			}
+			x0 += arrayRows[i];
+			y0 = 0;
+		}
+
+
+		k = 0;
+		double []kq = new double[res.length];
+		for(int i=0;i<res.length;i++){
+			kq[k++] = getValueRegion(res[i], temp_0);
+		}
+		
+		return new MatrixImage(kq, hType, wType);
+	}
+	
+	public static double getValueFeature(MatrixImage mt, MatrixImage mtType){
+		double res = 0;
+		int r = mt.getRows();
+		int c = mt.getCols();
+		
+		double [][]temp = convertToMatrix(mt);
+		double [][]temp1 = convertToMatrix(mtType);
+		
+		for(int i=0;i<r;i++){
+			for(int j=0;j<c;j++){
+				if(temp1[i][j] == 1){
+					res += temp[i][j];
+				}
+				else {
+					res -= temp[i][j];
+				}
+			}
+		}
+		
+		return res;
+	}
+	
+	public MatrixImage(double []temp, int r, int c){
+		this.rows = r;
+		this.cols = c;
+		this.data = temp;
+	}
+	
+	public static double getValueRegion(ObjectCandidate obj, double[][]temp){
+		int x0 = obj.x0;
+		int y0 = obj.y0;
+		int w = obj.w;
+		int h = obj.h;
+
+		
+		return temp[x0 + h][y0 + w] + temp[x0][y0] - temp[x0 + h][y0] - temp[x0][y0 + w];
+	}
+	
+	public static void printStaticArray(double [][]temp){
+
+		for(int i=0;i<temp.length;i++){
+			for(int j=0;j<temp[0].length;j++){
+				System.out.print(temp[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
+	
+	public void printArray(){
+		double[][]temp = convertToMatrix(this);
+		for(int i=0;i<temp.length;i++){
+			for(int j=0;j<temp[0].length;j++){
+				System.out.print(temp[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
 	public void print(){
 		System.out.println(rows + " " + cols);
 		for(int i=0;i<getSize();i++){
@@ -75,6 +232,28 @@ public class MatrixImage {
 	}
 	public int getSize(){
 		return rows * cols;
+	}
+	
+	
+	public static double[][] f(MatrixImage mt){
+		int r = mt.getRows();
+		int c = mt.getCols();
+		
+		double[][]temp = new double[r+1][c+1];
+		for(int j=0;j<=c;j++){
+			temp[0][j] = 0;
+		}
+		for(int i=0;i<=r;i++){
+			temp[i][0] = 0;
+		}
+		
+		double[][]temp1 = convertToMatrix(mt);
+		for(int i=1;i<=r;i++){
+			for(int j=1;j<=c;j++){
+				temp[i][j] = temp1[i-1][j-1];
+			}
+		}
+		return temp;
 	}
 	
 	public static void writeFileTxtBufferedImage(MatrixImage mt, String nameFileText){
@@ -133,5 +312,18 @@ public class MatrixImage {
 		}
 		
 		return result;
+	}
+}
+
+class ObjectCandidate{
+	int x0, y0, w, h;
+	public ObjectCandidate(int x0, int y0, int h, int w){
+		this.x0 = x0;
+		this.y0 = y0;
+		this.w = w;
+		this.h= h;
+	}
+	public void print(){
+		System.out.println(x0 + "_ " + y0 + "_" + w + "_" + h);
 	}
 }

@@ -1,7 +1,6 @@
 package vj.algorithm.featureset;
 
 import java.io.PrintWriter;
-import java.sql.Savepoint;
 
 import vj.algorithm.io.MatrixImage;
 
@@ -20,7 +19,7 @@ public class Feature {
 	int x, y, w, h;
 	MatrixImage matrixType;
 	
-	public Feature(String f, int x, int y, int w, int h, String pathMtType){
+	public Feature(String f, int x, int y, int h, int w, String pathMtType){
 		this.typeFeature = f;
 		this.x = x;
 		this.y = y;
@@ -29,7 +28,7 @@ public class Feature {
 		this.matrixType = readMatrixType(pathMtType);
 	}
 	
-	public Feature(String f, int x, int y, int w, int h, MatrixImage MtType){
+	public Feature(String f, int x, int y, int h, int w, MatrixImage MtType){
 		this.typeFeature = f;
 		this.x = x;
 		this.y = y;
@@ -55,7 +54,7 @@ public class Feature {
 			writer.println(ft.typeFeature);
 			writer.println(ft.x);
 			writer.println(ft.y);
-			writer.println(ft.w);
+			writer.println(ft.h);
 			writer.println(ft.w);
 			MatrixImage mtFeature = ft.matrixType;
 			int rows = mtFeature.getRows();
@@ -83,54 +82,41 @@ public class Feature {
 	public static void createFeature(String pathRoot, String pathMtType, String pathMtImage){
 		MatrixImage mtType = readMatrixType(pathMtType);
 		MatrixImage mtImage = readMatrixType(pathMtImage);
-		String typeofFeature = "type1";
+		String typeofFeature = "type3";
 		
 		int hType = mtType.getRows();
 		int wType = mtType.getCols();
-		
+
 		int hImage = mtImage.getRows();
 		int wImage = mtImage.getCols();
 		
 		int hInit = hType;
 		int wInit = wType;
 		
-		int x0 = 0;
-		int y0 = 0;
-		
-		int count = 1;
-		do {
-			MatrixImage mt = new MatrixImage(hInit, wInit);
-			
-			// Đoạn code này cần xử lý lại (04/10/2016)
-			double[][]temp = new double[hImage][wImage];
-			int iRow = 0;
-			int jCol = 0;
-			
-			for(int i=0;i<hImage * wImage;i++){
-				temp[iRow][jCol] = mtImage.getData()[i];
-				jCol++;
-				if(jCol == wImage){
-					jCol = 0;
-					iRow++;
-				}
-			}
-			int k = 0;
-			for(int i=x0;i<x0 + hInit;i++){
-				for(int j=y0;j<y0 + wInit;j++){
-					mt.getData()[k++] = temp[i][j];
-				}
-			}
-			// Chuyển đổi mảng một chiều thành ma trận (matrix)
-			
-			Feature ft = new Feature(typeofFeature, x0, y0, wInit, hInit, mt);
-			writeFeature(ft, pathRoot + "\\" + count + "_file.txt");
 
-			
-			
-			count++;
-			if(count > 1) break;
-			
-		}while(true);
+		double [][]temp = MatrixImage.convertToMatrix(mtImage);
+		
+		for(int x0=0;x0<=hImage-hType;x0++){
+			for(int y0=0;y0<=wImage-wType;y0++){
+				
+				for(int i1=hInit;i1<=hImage;i1++){
+					for(int j1=wInit;j1<=wImage;j1++){
+						
+						if(x0 + i1 <= hImage && y0 + j1 <= wImage){
+							
+							MatrixImage mt = new MatrixImage(i1, j1, x0, y0, temp);
+							Feature ft = new Feature(typeofFeature, x0, y0, i1, j1, mt);
+							writeFeature(ft, pathRoot + "\\toado(" + x0 + "," + y0 + ")_" + (i1 + "_" + j1) + "_file.txt");
+							
+						}
+						
+						
+					}
+				}
+				
+			}
+		}
+
 		
 	}
 	

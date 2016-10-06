@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -124,6 +125,45 @@ public class ImageManager {
 		return new MatrixImage(h, w, data);
 	}
 	
+	public static void getIndexArray(int n, int[]train, int[]test){
+		Random r = new Random();
+		
+		ArrayList<Integer>arr = new ArrayList<>();
+		int count = 0;
+		Object[] arrTemp = new Object[train.length];
+		
+		do {
+			int temp = r.nextInt(n) % n;
+			if(!arr.contains(temp)){
+				arr.add(temp);
+				count++;
+			}
+		}while(count < arrTemp.length);
+		
+		arrTemp = arr.toArray();
+		
+		for(int i=0;i<arrTemp.length;i++){
+			int temp = (int)arrTemp[i];
+			train[i] = temp;
+		}
+		
+		System.out.println(train.length + " " + test.length);
+		int k = 0;
+		for(int i=0;i<n;i++){
+			boolean ok = true;
+			
+			for(int j=0;j<train.length;j++){
+				if(i == train[j]){
+					ok = false;
+				}
+			}
+			if(ok){
+				test[k++] = i;
+			}
+		}
+		
+		
+	}
 	public static ArrayList<MatrixImage> getListMatrixImage(String pathImages, String pathMatrix){
 		ArrayList<String> arrNameListImage = getListNameImage(pathImages);
 		

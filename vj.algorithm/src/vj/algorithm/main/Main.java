@@ -1,8 +1,9 @@
 package vj.algorithm.main;
 
-import vj.algorithm.featureset.Feature;
-import vj.algorithm.io.ConstantPath;
 
+
+import vj.algorithm.io.ConstantPath;
+import vj.algorithm.io.MatrixImage;
 
 public class Main {
 	public static void main(String[] args) {
@@ -89,11 +90,95 @@ public class Main {
 		integralImage.print();
 		
 		*/
+		/* Test 5
 		String path = ConstantPath.FeatureTest;
 		String pathDraft = ConstantPath.FeatureDraft;
-		
+				
+		import vj.algorithm.featureset.Feature;
+		import vj.algorithm.io.ConstantPath;
 		
 		Feature.createFeature(pathDraft, path + "\\type1.txt", path + "\\matrix.txt");
+		*/
+		/*
+		Random r = new Random();
+		int n = 10;
+		ArrayList<Integer>arr = new ArrayList<>();
+		int count = 0;
+		Object[] train = new Object[5];
+		
+		do {
+			int temp = r.nextInt(n) % n;
+			if(!arr.contains(temp)){
+				arr.add(temp);
+				count++;
+			}
+		}while(count < train.length);
+		
+		train = arr.toArray();
+		
+		for(int i=0;i<arr.size();i++){
+			System.out.println(arr.get(i));
+		}
+		
+		for(int i=0;i<train.length;i++){
+			int temp = (int)train[i];
+			System.out.println(temp);
+		}
+		*/
+		
+		/*
+		 * 
+		 * 
+		import java.util.ArrayList;
+		import java.util.Random;
+		
+		import vj.algorithm.io.ImageManager;
+
+		int n = 15;
+		int []train = new int[n/2];
+		int []test = new int[n - train.length];
+		
+		ImageManager.getIndexArray(n, train, test);
+		for(int i=0;i<train.length;i++){
+			System.out.print(train[i] + " ");
+		}
+		System.out.println();
+		for(int i=0;i<test.length;i++){
+			System.out.print(test[i] + " ");
+		}
+		System.out.println();
+		*/
+		
+		/* Test 6
+		import vj.algorithm.featureset.Feature;
+		import vj.algorithm.io.ConstantPath;
+
+		String path = ConstantPath.FeatureTest;
+		String pathDraft = ConstantPath.FeatureDraft;
+				
+		
+		Feature.createFeature(pathDraft, path + "\\type3.txt", path + "\\matrix.txt");
+		*/
+		
+		
+		
+		MatrixImage mt = MatrixImage.readFileTxtToBufferedImage(ConstantPath.MatrixTest + "\\" + "abc.txt");
+		
+		MatrixImage integralImage = MatrixImage.getIntegralImage(mt);
+		integralImage.print();
+		System.out.println("---------------");
+		double[][]temp = MatrixImage.f(integralImage);
+		MatrixImage.printStaticArray(temp);
+		
+		
+		double[][]getCand = MatrixImage.convertToMatrix(integralImage);
+		MatrixImage mtType = MatrixImage.readFileTxtToBufferedImage(ConstantPath.FeatureTest + "\\" + "type1.txt");
+		
+		MatrixImage result = MatrixImage.getCandidates(getCand, mtType, temp);
+		result.print();
+		
+		double res = MatrixImage.getValueFeature(result, mtType);
+		System.out.println(res);
 
 		System.out.println("OK");
 	}
