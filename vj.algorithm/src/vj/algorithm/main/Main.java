@@ -1,9 +1,11 @@
 package vj.algorithm.main;
 
-
-
+import vj.algorithm.featureset.Feature;
 import vj.algorithm.io.ConstantPath;
-import vj.algorithm.io.MatrixImage;
+import vj.algorithm.io.ImageManager;
+
+
+
 
 public class Main {
 	public static void main(String[] args) {
@@ -99,32 +101,8 @@ public class Main {
 		
 		Feature.createFeature(pathDraft, path + "\\type1.txt", path + "\\matrix.txt");
 		*/
-		/*
-		Random r = new Random();
-		int n = 10;
-		ArrayList<Integer>arr = new ArrayList<>();
-		int count = 0;
-		Object[] train = new Object[5];
-		
-		do {
-			int temp = r.nextInt(n) % n;
-			if(!arr.contains(temp)){
-				arr.add(temp);
-				count++;
-			}
-		}while(count < train.length);
-		
-		train = arr.toArray();
-		
-		for(int i=0;i<arr.size();i++){
-			System.out.println(arr.get(i));
-		}
-		
-		for(int i=0;i<train.length;i++){
-			int temp = (int)train[i];
-			System.out.println(temp);
-		}
-		*/
+
+
 		
 		/*
 		 * 
@@ -148,20 +126,34 @@ public class Main {
 		}
 		System.out.println();
 		*/
-		
-		/* Test 6
-		import vj.algorithm.featureset.Feature;
-		import vj.algorithm.io.ConstantPath;
 
-		String path = ConstantPath.FeatureTest;
-		String pathDraft = ConstantPath.FeatureDraft;
-				
+		//ImageManager.saveListMatrixImage(ConstantPath.ImagePFACE, ConstantPath.MatrixPFACETRAIN, ConstantPath.MatrixPFACETEST);
+		//ImageManager.saveListMatrixImage(ConstantPath.ImageNFACE, ConstantPath.MatrixNFACETRAIN, ConstantPath.MatrixNFACETEST);
 		
-		Feature.createFeature(pathDraft, path + "\\type3.txt", path + "\\matrix.txt");
+		
+		/*
+		String path = ConstantPath.FeatureTest;
+		String pathDraft = ConstantPath.FeatureDraftNFACES;
+				
+		Feature.createListFeature(ConstantPath.MatrixNFACETRAIN, path + "\\type3.txt", pathDraft);
 		*/
 		
+		String path = ConstantPath.FeatureTest;
+		String pathDraft = ConstantPath.FeatureDraft;
+		int n = 4;
+		for(int i=1;i<=n;i++){
+			Feature.createListFeature(ConstantPath.MatrixNFACETRAIN, path + "\\type" + i + ".txt", pathDraft, false);
+			Feature.createListFeature(ConstantPath.MatrixPFACETRAIN, path + "\\type" + i + ".txt", pathDraft, true);
+				
+		}
+		
+		//ImageManager.deleteFile(ConstantPath.FeatureDraftNFACES + "\\" + "type3");
 		
 		
+		/*
+				 
+		import vj.algorithm.io.ConstantPath;
+		import vj.algorithm.io.MatrixImage;
 		MatrixImage mt = MatrixImage.readFileTxtToBufferedImage(ConstantPath.MatrixTest + "\\" + "abc.txt");
 		
 		MatrixImage integralImage = MatrixImage.getIntegralImage(mt);
@@ -179,7 +171,8 @@ public class Main {
 		
 		double res = MatrixImage.getValueFeature(result, mtType);
 		System.out.println(res);
-
+		
+		*/
 		System.out.println("OK");
 	}
 }

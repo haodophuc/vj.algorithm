@@ -1,7 +1,10 @@
 package vj.algorithm.featureset;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
+import vj.algorithm.io.ImageManager;
 import vj.algorithm.io.MatrixImage;
 
 /*
@@ -47,7 +50,7 @@ public class Feature {
 	}
 	
 	
-	public static void writeFeature(Feature ft, String nameFileText){
+	public static void writeFeature(Feature ft, String nameFileText, MatrixImage result, double res){
 		
 		try {
 			PrintWriter writer = new PrintWriter(nameFileText, "UTF-8");
@@ -71,6 +74,17 @@ public class Feature {
 
 			writer.println();
 			
+			for(int i=0;i<result.getSize();i++){
+				writer.print(result.getData()[i] + " ");
+
+				if((i + 1) % result.getCols() == 0 && i > 0){
+					writer.println();
+				}
+			}
+			
+			writer.println(res);
+			
+			
 			
 			writer.close();
 		} catch (Exception e) {
@@ -78,11 +92,68 @@ public class Feature {
 		}
 	}
 	
+	public static void createListFeature(String pathImageTrain, String pathType, String pathDraft, boolean test){
+		ArrayList<String> arrNameListImage = ImageManager.getListNameTxt(pathImageTrain);
+		System.out.println(arrNameListImage.size());
+		
+		String[]spl = pathType.split("\\\\");
+		String[] spl1 = spl[spl.length - 1].split(".txt");
+		String nameType = spl1[0];
+		String nameFile = "";
+		if(test){
+			nameFile += nameType + "_" + "pos.txt";
+		}
+		else {
+			nameFile += nameType + "_" + "neg.txt";
+		}
+		
+		try {
+			PrintWriter writer = new PrintWriter(new File(pathDraft + "\\" + nameFile), "UTF-8");
+
+			for(int i=0;i<arrNameListImage.size();i++){
+				String path = pathImageTrain + "\\" + arrNameListImage.get(i);
+				ArrayList<ObjectSaveValueFeature> arrSaveValueFeature =  Feature.createFeature(pathDraft, pathType, path, arrNameListImage.get(i));
+				
+				for(ObjectSaveValueFeature obj : arrSaveValueFeature){
+					writer.println(obj.toString());
+				}
+				
+			}
+			writer.close();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		
+		System.out.println("Done function createListFeature");
+	}
 	
-	public static void createFeature(String pathRoot, String pathMtType, String pathMtImage){
+	public static ArrayList<ObjectSaveValueFeature> createFeature(String pathRoot, String pathMtType, String pathMtImage, String nameImage){
 		MatrixImage mtType = readMatrixType(pathMtType);
 		MatrixImage mtImage = readMatrixType(pathMtImage);
-		String typeofFeature = "type3";
+		
+		String[]spl = pathMtType.split("\\\\");
+		String[] spl1 = spl[spl.length - 1].split(".txt");
+		
+		String[]_spl = pathMtImage.split("\\\\");
+		String[] _spl1 = _spl[_spl.length - 1].split(".txt");
+		
+		System.out.println(_spl1[0]);
+		
+		String typeofFeature = spl1[0];
+		pathRoot = pathRoot + "\\" + typeofFeature;
+
+		/*
+		File file = new File(pathRoot);
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directory is created!");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+		*/
 		
 		int hType = mtType.getRows();
 		int wType = mtType.getCols();
@@ -92,7 +163,7 @@ public class Feature {
 		
 		int hInit = hType;
 		int wInit = wType;
-		
+		ArrayList<ObjectSaveValueFeature> arrSaveValueFeature = new ArrayList<>();
 
 		double [][]temp = MatrixImage.convertToMatrix(mtImage);
 		
@@ -103,13 +174,21 @@ public class Feature {
 					for(int j1=wInit;j1<=wImage;j1++){
 						
 						if(x0 + i1 <= hImage && y0 + j1 <= wImage){
-							
 							MatrixImage mt = new MatrixImage(i1, j1, x0, y0, temp);
 							Feature ft = new Feature(typeofFeature, x0, y0, i1, j1, mt);
-							writeFeature(ft, pathRoot + "\\toado(" + x0 + "," + y0 + ")_" + (i1 + "_" + j1) + "_file.txt");
 							
+							MatrixImage integralImage = MatrixImage.getIntegralImage(mt);
+							double[][]mang2Chieu = MatrixImage.AddRow0AndCol0(integralImage);
+							double[][]getCand = MatrixImage.convertToMatrix(integralImage);
+							
+							MatrixImage result = MatrixImage.getCandidates(getCand, mtType, mang2Chieu);
+							double res = MatrixImage.getValueFeature(result, mtType);
+							
+							
+							//writeFeature(ft, pathRoot + "\\" + _spl1[0] + "_toado(" + x0 + "," + y0 + ")_" + (i1 + "_" + j1) + "_file.txt", result, res);
+							ObjectSaveValueFeature obj = new ObjectSaveValueFeature(spl1[0], x0, y0, i1, j1, res, nameImage);
+							arrSaveValueFeature.add(obj);
 						}
-						
 						
 					}
 				}
@@ -117,10 +196,31 @@ public class Feature {
 			}
 		}
 
-		
+		return arrSaveValueFeature;
 	}
 	
 	public static MatrixImage readMatrixType(String path){
 		return MatrixImage.readFileTxtToBufferedImage(path);
+	}
+}
+
+class ObjectSaveValueFeature{
+	String type;
+	int x0, y0, w, h;
+	double res;
+	String nameImage;
+	
+	public ObjectSaveValueFeature(String type, int x0, int y0, int h, int w, double r, String name){
+		this.type = type;
+		this.x0 = x0;
+		this.y0 = y0;
+		this.h= h;
+		this.w = w;
+		this.res = r;
+		this.nameImage = name;
+	}
+	@Override
+	public String toString(){
+		return type + "!" + x0 + "!" + y0 + "!" + h + "!" + w + "!" + res + "!" + nameImage;
 	}
 }

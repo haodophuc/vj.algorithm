@@ -44,6 +44,35 @@ public class ImageManager {
 		return namesList;
 	}
 	
+	
+	public static void deleteFile(String path){
+		File index = new File(path);
+
+		String[]entries = index.list();
+		for(String s: entries){
+		    File currentFile = new File(index.getPath(),s);
+		    currentFile.delete();
+		}
+		System.out.println("Finished");
+	}
+	
+	public static ArrayList<String> getListNameTxt(String path){
+		File folder = new File(path);
+		File[] files = folder.listFiles();
+		
+		ArrayList<String> namesList = new ArrayList<>();
+		for(File f : files){
+			if(f.isFile() && 
+					(		f.getName().endsWith(".txt")
+					) 	
+			){
+				namesList.add(f.getName());
+			}
+		}
+		
+		return namesList;
+	}
+	
 	public static BufferedImage getBufferedImage(String image){
 		File file = new File(image);
 		BufferedImage inData = null;
@@ -178,6 +207,29 @@ public class ImageManager {
 			saveBufferedImageToText(grayImage, pathMatrix + "\\" + name + ".txt");
 		}
 		return result;
+	}
+	
+	public static void saveListMatrixImage(String pathImages, String pathMatrixTrain, String pathMatrixTest){
+		ArrayList<String> arrNameListImage = getListNameImage(pathImages);
+		
+		int n = arrNameListImage.size();
+		
+		int []train = new int[n/2];
+		int []test = new int[n - train.length];
+		
+		ImageManager.getIndexArray(n, train, test);
+
+		for(int i=0;i<train.length;i++){
+			String name = arrNameListImage.get(train[i]);
+			BufferedImage grayImage = getGrayImage(getBufferedImage(pathImages + "\\" + name));
+			saveBufferedImageToText(grayImage, pathMatrixTrain + "\\" + name + ".txt");
+		}
+		for(int i=0;i<test.length;i++){
+			String name = arrNameListImage.get(test[i]);
+			BufferedImage grayImage = getGrayImage(getBufferedImage(pathImages + "\\" + name));
+			saveBufferedImageToText(grayImage, pathMatrixTest + "\\" + name + ".txt");
+		}
+
 	}
 	
 	public static void saveBufferedImageToText(BufferedImage buffGray, String nameFileText){

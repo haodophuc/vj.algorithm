@@ -256,6 +256,26 @@ public class MatrixImage {
 		return temp;
 	}
 	
+	public static double[][] AddRow0AndCol0(MatrixImage mt){
+		int r = mt.getRows();
+		int c = mt.getCols();
+		
+		double[][]temp = new double[r+1][c+1];
+		for(int j=0;j<=c;j++){
+			temp[0][j] = 0;
+		}
+		for(int i=0;i<=r;i++){
+			temp[i][0] = 0;
+		}
+		
+		double[][]temp1 = convertToMatrix(mt);
+		for(int i=1;i<=r;i++){
+			for(int j=1;j<=c;j++){
+				temp[i][j] = temp1[i-1][j-1];
+			}
+		}
+		return temp;
+	}
 	public static void writeFileTxtBufferedImage(MatrixImage mt, String nameFileText){
 		int h = mt.rows;
 		int w = mt.cols;
